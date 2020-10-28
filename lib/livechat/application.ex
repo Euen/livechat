@@ -12,7 +12,7 @@ defmodule Livechat.Application do
       # Start the Telemetry supervisor
       LivechatWeb.Telemetry,
       # Start the PubSub system
-      {Phoenix.PubSub, name: Livechat.PubSub},
+      {Phoenix.PubSub, name: :my_pubsub},
       # Start the Endpoint (http/https)
       LivechatWeb.Endpoint
       # Start a worker by calling: Livechat.Worker.start_link(arg)
