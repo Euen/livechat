@@ -11,7 +11,7 @@ defmodule Livechat.Chat do
   @topic inspect(__MODULE__)
 
   def subscribe do
-    Phoenix.PubSub.subscribe(Livechat.Pubsub, @topic)
+    :ok = Phoenix.PubSub.subscribe(:my_pubsub, @topic)
   end
 
   @doc """
@@ -59,6 +59,7 @@ defmodule Livechat.Chat do
     %Message{}
     |> Message.changeset(attrs)
     |> Repo.insert()
+    |> notify_subs([:message, :inserted])
   end
 
   @doc """
@@ -77,6 +78,7 @@ defmodule Livechat.Chat do
     message
     |> Message.changeset(attrs)
     |> Repo.update()
+    |> notify_subs([:message, :updated])
   end
 
   @doc """
@@ -92,7 +94,9 @@ defmodule Livechat.Chat do
 
   """
   def delete_message(%Message{} = message) do
-    Repo.delete(message)
+    message
+    |> Repo.delete()
+    |> notify_subs([:message, :deleted])
   end
 
   @doc """
@@ -109,12 +113,12 @@ defmodule Livechat.Chat do
   end
 
 
-  def notify_subs({:ok, result}, event) do
-    Phoenix.PubSub.broadcast(Livechat.Pubsub, @topic, {__MODULE__, event})
+  defp notify_subs({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(:my_pubsub, @topic, {__MODULE__, event, result})
     {:ok, result}
   end
 
-  def notify_subs({:error, reason}, _event) do
+  defp notify_subs({:error, reason}, _event) do
     {:error, reason}
   end
 end

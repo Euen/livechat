@@ -15,7 +15,7 @@ config :livechat, LivechatWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "9uyzXkL1r7oV1jrRxvQ6phyj1aKeyY1b53iSomGZjIBsbMSds0OYcajrrkNN+Mt9",
   render_errors: [view: LivechatWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: Livechat.PubSub,
+  pubsub_server: :my_pubsub,
   live_view: [signing_salt: "/HtH7H4k"]
 
 # Configures Elixir's Logger
